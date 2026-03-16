@@ -200,11 +200,6 @@ npm run dev         # 开发模式（文件变更自动重启）
 - **Claude Code CLI**（已安装并完成认证）
 - **GitHub Token**（Issues 读写 + repo 读取权限）
 
-## 了解更多
-
-- [架构设计](docs/architecture.md) — 调和循环模式、状态机、故障模型、演进路线图
-- [详细设计](docs/design.md) — 模块划分、通信机制、完整执行流程
-
 ## 许可证
 
 [MIT](LICENSE)
