@@ -1,13 +1,13 @@
-# Silent-Dev
+# Issue-Pilot
 
 A local AI task scheduler that watches GitHub Issues and automatically dispatches [Claude Code](https://docs.anthropic.com/en/docs/claude-code) to handle them.
 
-Silent-Dev uses a **reconciliation loop** pattern (inspired by Kubernetes controllers) to poll GitHub for issues with specific labels, claim them, and execute AI-powered workflows — all running locally on your machine.
+Issue-Pilot uses a **reconciliation loop** pattern (inspired by Kubernetes controllers) to poll GitHub for issues with specific labels, claim them, and execute AI-powered workflows — all running locally on your machine.
 
 ## How It Works
 
 ```
-GitHub Issues                    Silent-Dev (local)
+GitHub Issues                    Issue-Pilot (local)
 
   Issue #42                      ┌─────────────┐
   [silent:ready]  ──────────────>│ Reconciler   │  polls every N seconds
@@ -30,7 +30,7 @@ GitHub Issues                    Silent-Dev (local)
 ```
 
 1. You label a GitHub issue with `silent:ready`
-2. Silent-Dev detects it, claims it (swaps label to `silent:in-progress`)
+2. Issue-Pilot detects it, claims it (swaps label to `silent:in-progress`)
 3. Claude Code executes the task defined in your `WORKFLOW.md` template
 4. On success, Claude removes the label and optionally creates a PR
 5. On failure, the issue is labeled `silent:failed` with a diagnostic comment
@@ -44,8 +44,8 @@ GitHub Issues                    Silent-Dev (local)
 ## Installation
 
 ```bash
-git clone https://github.com/<your-org>/silent-dev.git
-cd silent-dev
+git clone https://github.com/<your-org>/issue-pilot.git
+cd issue-pilot
 npm install
 ```
 
@@ -154,7 +154,7 @@ npm run dev
 
 ## Architecture
 
-Silent-Dev follows a modular architecture with clear separation of concerns:
+Issue-Pilot follows a modular architecture with clear separation of concerns:
 
 | Module | File | Responsibility |
 |--------|------|----------------|

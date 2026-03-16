@@ -16,7 +16,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
-const LOG_DIR = path.join(os.homedir(), ".silent-dev");
+const LOG_DIR = path.join(os.homedir(), ".issue-pilot");
 const LOG_FILE = path.join(LOG_DIR, "daemon.log");
 const RECENT_COUNT = 50;
 

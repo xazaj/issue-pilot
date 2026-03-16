@@ -87,7 +87,7 @@ async function main() {
   });
 
   reconciler.start();
-  log.info({ executor: executor.name }, "silent-dev started");
+  log.info({ executor: executor.name }, "issue-pilot started");
 }
 
 try {

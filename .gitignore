@@ -28,4 +28,4 @@ Thumbs.db
 *.tsbuildinfo
 
 # Optional: local data
-.silent-dev/
+.issue-pilot/

@@ -86,7 +86,7 @@ export const themes: Theme[] = [
   },
 ];
 
-const SETTINGS_DIR = path.join(os.homedir(), ".silent-dev");
+const SETTINGS_DIR = path.join(os.homedir(), ".issue-pilot");
 const SETTINGS_FILE = path.join(SETTINGS_DIR, "settings.json");
 
 export function loadThemeIndex(): number {

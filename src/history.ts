@@ -23,7 +23,7 @@ export interface HistoryStats {
   totalTokensOut: number;
 }
 
-const DATA_DIR = path.join(os.homedir(), ".silent-dev");
+const DATA_DIR = path.join(os.homedir(), ".issue-pilot");
 const HISTORY_FILE = path.join(DATA_DIR, "history.jsonl");
 
 function ensureDir() {

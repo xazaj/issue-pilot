@@ -208,7 +208,7 @@ export class Runner {
           await this.githubClient.addComment(
             issue.number,
             [
-              "Silent-Dev task failed.",
+              "Issue-Pilot task failed.",
               `- reason: ${reason}`,
               `- executor: ${this.executor.name}`,
               `- outer turns: ${outerTurns}`,
@@ -253,7 +253,7 @@ export class Runner {
           );
           await this.githubClient.addComment(
             issue.number,
-            `Silent-Dev task crashed.\n- reason: ${message}`
+            `Issue-Pilot task crashed.\n- reason: ${message}`
           );
         } catch (reportError) {
           issueLog.error({ err: reportError }, "failed to report runner crash");

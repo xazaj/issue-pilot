@@ -1,4 +1,4 @@
-# Silent-Dev 架构设计
+# Issue-Pilot 架构设计
 
 ---
 
@@ -6,7 +6,7 @@
 
 ### 1.1 问题的本质
 
-Silent-Dev 要解决的问题可以还原为一句话：
+Issue-Pilot 要解决的问题可以还原为一句话：
 
 > **一个本地进程，需要感知 GitHub Issue 的状态变化，并调度 AI Agent 执行任务。**
 
@@ -39,7 +39,7 @@ Silent-Dev 要解决的问题可以还原为一句话：
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   Silent-Dev（本地进程）               │
+│                   Issue-Pilot（本地进程）               │
 │                                                      │
 │  ┌──────────────┐    ┌──────────────┐               │
 │  │ Reconciler   │───>│ Dispatcher   │               │
@@ -144,7 +144,7 @@ Silent-Dev 要解决的问题可以还原为一句话：
 
 | # | 故障场景 | 影响 | 恢复机制 |
 |---|---------|------|---------|
-| 1 | Silent-Dev 进程崩溃 | 当前任务中断，队列丢失 | 重启后 Reconciler 自动发现 ready + in-progress Issue |
+| 1 | Issue-Pilot 进程崩溃 | 当前任务中断，队列丢失 | 重启后 Reconciler 自动发现 ready + in-progress Issue |
 | 2 | Claude 进程 hang | current 永远不释放 | 心跳检测（5min）→ 任务超时（30min）→ SIGTERM/SIGKILL |
 | 3 | Claude 进程崩溃 | 任务未完成 | exit 事件监听 → 标记 failed → 处理队列 |
 | 4 | GitHub API 暂时不可用 | 轮询失败 | 下一个循环自动重试，不需要特殊处理 |

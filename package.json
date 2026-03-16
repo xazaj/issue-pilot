@@ -1,5 +1,5 @@
 {
-  "name": "silent-dev",
+  "name": "issue-pilot",
   "version": "1.0.0",
   "description": "A local AI task scheduler that watches GitHub Issues and dispatches Claude Code to handle them automatically",
   "keywords": [
@@ -14,7 +14,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xazaj/silent-dev.git"
+    "url": "https://github.com/xazaj/issue-pilot.git"
   },
   "engines": {
     "node": ">=22.0.0"

@@ -11,7 +11,7 @@ interface HelpOverlayProps {
 
 const HELP_LINES = [
   "",
-  "  SILENT-DEV  -  Keyboard Shortcuts",
+  "  ISSUE-PILOT  -  Keyboard Shortcuts",
   "",
   "  Navigation",
   "    Up/Down     Scroll log output",

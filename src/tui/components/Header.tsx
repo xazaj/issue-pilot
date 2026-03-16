@@ -21,7 +21,7 @@ export function Header({ t, width, running, repo, uptime, spin }: HeaderProps) {
   const gFrame = running ? spin % 3 : 0;
   const gradL = GRAD_L[gFrame]!;
   const gradR = GRAD_R[gFrame]!;
-  const titlePart = ` ${gradL} SILENT-DEV ${gradR}`;
+  const titlePart = ` ${gradL} ISSUE-PILOT ${gradR}`;
   const gradColor = running ? t.accent : t.dim;
 
   // Status indicator with animation
