@@ -200,10 +200,45 @@ npm run dev         # Dev mode (auto-restart on changes)
 - **Claude Code CLI** (installed and authenticated)
 - **GitHub Token** (issues read/write + repo read)
 
-## Learn More
+## Roadmap
 
-- [Architecture](docs/architecture.md) — Reconciliation loop, state machine, fault model, evolution roadmap
-- [Detailed Design](docs/design.md) — Module design, communication protocol, full execution flow
+### v1.0 — Single Workflow (current)
+
+One workflow file, one trigger label. Suitable for issue analysis and commenting.
+
+### v1.1 — Multi-Workflow Dispatch
+
+Support a `workflows/` directory with label-based routing. Ships with built-in templates:
+
+| Label | Workflow | What AI does |
+|-------|----------|-------------|
+| `pilot:qa` | Q&A | Read codebase, answer technical questions in issues |
+| `pilot:fix` | Bug fix | Locate bug, fix code, create PR |
+| `pilot:impl` | Feature | Implement feature from requirements, create PR |
+
+### v1.2 — Workflow Types
+
+Introduce a `type` field so the framework handles mechanical operations (branching, committing, opening PRs) while prompts focus purely on thinking:
+
+```yaml
+---
+trigger_label: "pilot:fix"
+type: "pr"                  # framework manages branch and PR lifecycle
+branch_prefix: "fix/"
+---
+(prompt focuses on understanding and fixing the bug)
+```
+
+| type | Framework handles | Prompt handles |
+|------|-------------------|----------------|
+| `comment` | Post comment | Analyze and compose answer |
+| `pr` | Create branch, commit, open PR, link issue | Understand requirements, write code |
+| `review` | Fetch diff, submit review | Analyze code quality, suggest improvements |
+
+### v1.3 — Pipelines & Concurrency
+
+- Workflow chaining: analyze → human approval → implement → review, driven by label transitions
+- Concurrent execution: isolated via git worktree, multiple tasks in parallel
 
 ## License
 

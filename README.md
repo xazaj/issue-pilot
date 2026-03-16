@@ -200,6 +200,46 @@ npm run dev         # 开发模式（文件变更自动重启）
 - **Claude Code CLI**（已安装并完成认证）
 - **GitHub Token**（Issues 读写 + repo 读取权限）
 
+## 路线图
+
+### v1.0 — 单 Workflow 调度（当前）
+
+单个 Workflow 文件，单一标签触发，适用于 Issue 分析、回复等场景。
+
+### v1.1 — 多 Workflow 调度
+
+支持 `workflows/` 目录，不同标签触发不同 Workflow。内置常用模板：
+
+| 标签 | Workflow | AI 做什么 |
+|------|----------|----------|
+| `pilot:qa` | 答疑 | 阅读代码库，回答 Issue 中的技术问题 |
+| `pilot:fix` | 修复缺陷 | 定位 Bug，修改代码，创建 PR |
+| `pilot:impl` | 开发功能 | 根据需求实现功能，创建 PR |
+
+### v1.2 — Workflow 类型
+
+引入 `type` 字段，框架接管机械性操作（创建分支、提交代码、开 PR），提示词只负责思考：
+
+```yaml
+---
+trigger_label: "pilot:fix"
+type: "pr"                  # 框架自动处理分支和 PR 生命周期
+branch_prefix: "fix/"
+---
+（提示词只需专注于理解问题和修复代码）
+```
+
+| type | 框架自动处理 | 提示词负责 |
+|------|-------------|-----------|
+| `comment` | 发布评论 | 分析问题，组织回答 |
+| `pr` | 创建分支、提交、开 PR、关联 Issue | 理解需求，编写代码 |
+| `review` | 获取 diff、提交 Review | 分析代码质量，给出建议 |
+
+### v1.3 — 流水线与并发
+
+- Workflow 串联：分析 → 人工确认 → 实现 → Review，标签驱动自动流转
+- 并发执行：通过 git worktree 隔离，多任务并行处理
+
 ## 许可证
 
 [MIT](LICENSE)
