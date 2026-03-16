@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-import "dotenv/config";
+import { loadEnv, resolveWorkflowPath } from "./resolve.js";
+
+loadEnv();
+
 import { loadConfig } from "./config.js";
 import { ClaudeExecutor } from "./claude-executor.js";
 import { Dispatcher } from "./dispatcher.js";
@@ -9,7 +12,7 @@ import { Reconciler } from "./reconciler.js";
 import { Runner } from "./runner.js";
 
 async function main() {
-  const workflowPath = process.argv[2] ?? "WORKFLOW.md";
+  const workflowPath = resolveWorkflowPath(process.argv[2]);
   const { config, template } = loadConfig(workflowPath);
 
   const logger = createLogger(config.log_level);

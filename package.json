@@ -30,6 +30,7 @@
     "dist",
     "WORKFLOW.example.md",
     "README.md",
+    "README.en.md",
     "LICENSE"
   ],
   "scripts": {

@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-import "dotenv/config";
+import { loadEnv, resolveWorkflowPath } from "./resolve.js";
+
+loadEnv();
+
 import React from "react";
 import { withFullScreen } from "fullscreen-ink";
 import App from "./tui/App.js";
@@ -31,7 +34,7 @@ setTerminalDefaultBg(initTheme.bg);
 
 // ---- Start app ----
 
-const workflowPath = process.argv[2] ?? "WORKFLOW.md";
+const workflowPath = resolveWorkflowPath(process.argv[2]);
 
 const ink = withFullScreen(<App workflowPath={workflowPath} />, {
   exitOnCtrlC: false,
