@@ -10,6 +10,10 @@
 
 [中文](README.md)
 
+<br>
+
+<img src="assets/tui-screenshot.png" alt="Issue-Pilot TUI" width="700">
+
 </div>
 
 ---
