@@ -13,9 +13,9 @@ const configSchema = z
       .int("poll_interval must be an integer")
       .positive("poll_interval must be > 0")
       .default(30),
-    ready_label: z.string().min(1).default("silent:ready"),
-    in_progress_label: z.string().min(1).default("silent:in-progress"),
-    failed_label: z.string().min(1).default("silent:failed"),
+    ready_label: z.string().min(1).default("pilot:ready"),
+    in_progress_label: z.string().min(1).default("pilot:in-progress"),
+    failed_label: z.string().min(1).default("pilot:failed"),
     working_dir: z
       .string()
       .min(1, "working_dir is required")

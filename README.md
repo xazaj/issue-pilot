@@ -10,7 +10,7 @@ Issue-Pilot uses a **reconciliation loop** pattern (inspired by Kubernetes contr
 GitHub Issues                    Issue-Pilot (local)
 
   Issue #42                      ┌─────────────┐
-  [silent:ready]  ──────────────>│ Reconciler   │  polls every N seconds
+  [pilot:ready]  ──────────────>│ Reconciler   │  polls every N seconds
                                  │              │
                                  └──────┬───────┘
                                         │
@@ -29,11 +29,11 @@ GitHub Issues                    Issue-Pilot (local)
   Claude creates PR, updates labels, etc.
 ```
 
-1. You label a GitHub issue with `silent:ready`
-2. Issue-Pilot detects it, claims it (swaps label to `silent:in-progress`)
+1. You label a GitHub issue with `pilot:ready`
+2. Issue-Pilot detects it, claims it (swaps label to `pilot:in-progress`)
 3. Claude Code executes the task defined in your `WORKFLOW.md` template
 4. On success, Claude removes the label and optionally creates a PR
-5. On failure, the issue is labeled `silent:failed` with a diagnostic comment
+5. On failure, the issue is labeled `pilot:failed` with a diagnostic comment
 
 ## Prerequisites
 
@@ -64,9 +64,9 @@ Create these labels in **Settings > Labels** of your target repo (names are cust
 
 | Label | Purpose |
 |-------|---------|
-| `silent:ready` | Marks an issue as ready for AI execution |
-| `silent:in-progress` | Issue is currently being processed |
-| `silent:failed` | Execution failed, needs human attention |
+| `pilot:ready` | Marks an issue as ready for AI execution |
+| `pilot:in-progress` | Issue is currently being processed |
+| `pilot:failed` | Execution failed, needs human attention |
 
 ### 3. Create a WORKFLOW.md
 
@@ -106,9 +106,9 @@ Body: {{issue_body}}
 | `repo_name` | *required* | Repository name |
 | `working_dir` | *required* | Absolute path to local repo clone |
 | `poll_interval` | `30` | Polling interval in seconds |
-| `ready_label` | `silent:ready` | Label that triggers execution |
-| `in_progress_label` | `silent:in-progress` | Label applied when claimed |
-| `failed_label` | `silent:failed` | Label applied on failure |
+| `ready_label` | `pilot:ready` | Label that triggers execution |
+| `in_progress_label` | `pilot:in-progress` | Label applied when claimed |
+| `failed_label` | `pilot:failed` | Label applied on failure |
 | `model` | `claude-sonnet-4-6` | Claude model to use |
 | `max_outer_turns` | `5` | Max outer retry loops |
 | `claude_max_turns` | `50` | Max agentic turns per Claude session |

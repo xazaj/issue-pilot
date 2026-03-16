@@ -48,7 +48,7 @@
 
 - [ ] 1.2 定义配置 Schema（`src/config.ts`）
   - 用 zod 定义完整配置类型（所有 WORKFLOW.md 参数）
-  - 设置默认值：poll_interval=30, ready_label="silent:ready" 等
+  - 设置默认值：poll_interval=30, ready_label="pilot:ready" 等
   - 导出 `Config` 类型
 
 - [ ] 1.3 实现配置读取（`src/config.ts`）
@@ -200,7 +200,7 @@
 
 - [ ] 6.3 端到端测试
   - 启动服务
-  - 在测试仓库创建 Issue，打上 `silent:ready` 标签
+  - 在测试仓库创建 Issue，打上 `pilot:ready` 标签
   - 观察：Reconciler 发现 → Dispatcher 调度 → Runner 认领 → Claude 执行 → 完成/失败
   - 验证标签流转和评论记录
 

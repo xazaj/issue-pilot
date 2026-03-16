@@ -2,9 +2,9 @@
 repo_owner: "your-org"
 repo_name: "your-repo"
 poll_interval: 30
-ready_label: "silent:ready"
-in_progress_label: "silent:in-progress"
-failed_label: "silent:failed"
+ready_label: "pilot:ready"
+in_progress_label: "pilot:in-progress"
+failed_label: "pilot:failed"
 working_dir: "/absolute/path/to/your/repo"
 model: "claude-sonnet-4-6"
 max_outer_turns: 5
