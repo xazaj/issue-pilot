@@ -43,10 +43,25 @@ GitHub Issues                    Issue-Pilot (local)
 
 ## Installation
 
+### Via npm (recommended)
+
 ```bash
-git clone https://github.com/<your-org>/issue-pilot.git
+npm install -g issue-pilot
+```
+
+Or run directly without installing:
+
+```bash
+npx issue-pilot
+```
+
+### From source
+
+```bash
+git clone https://github.com/xazaj/issue-pilot.git
 cd issue-pilot
 npm install
+npm run build
 ```
 
 ## Configuration
@@ -132,23 +147,29 @@ Body: {{issue_body}}
 
 ## Usage
 
-### Headless mode (structured JSON logs)
+### If installed globally
 
 ```bash
+# Headless mode (structured JSON logs)
+issue-pilot
+issue-pilot path/to/WORKFLOW.md
+
+# TUI mode (interactive terminal dashboard)
+issue-pilot-tui
+issue-pilot-tui path/to/WORKFLOW.md
+```
+
+### If running from source
+
+```bash
+# Headless mode
 npm start
-# or with a custom workflow file:
 npm start -- path/to/WORKFLOW.md
-```
 
-### TUI mode (interactive terminal dashboard)
-
-```bash
+# TUI mode
 npm run tui
-```
 
-### Development mode (auto-restart on changes)
-
-```bash
+# Development mode (auto-restart on changes)
 npm run dev
 ```
 

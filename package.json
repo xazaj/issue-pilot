@@ -19,14 +19,27 @@
   "engines": {
     "node": ">=22.0.0"
   },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "issue-pilot": "./dist/index.js",
+    "issue-pilot-tui": "./dist/tui.js"
+  },
+  "files": [
+    "dist",
+    "WORKFLOW.example.md",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
     "tui": "tsx src/tui.tsx",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
-  "type": "module",
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.71",
     "@octokit/rest": "^22.0.1",

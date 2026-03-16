@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import "dotenv/config";
 import { loadConfig } from "./config.js";
 import { ClaudeExecutor } from "./claude-executor.js";

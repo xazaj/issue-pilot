@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import "dotenv/config";
 import React from "react";
 import { withFullScreen } from "fullscreen-ink";
