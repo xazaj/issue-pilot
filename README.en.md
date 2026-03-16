@@ -2,7 +2,7 @@
 
 # Issue-Pilot
 
-**Label an issue, AI gets to work.**
+**Label an issue, AI handles it for you.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -16,104 +16,115 @@
 
 ## What is this?
 
-You slap a label on a GitHub Issue. Issue-Pilot picks it up and sends [Claude Code](https://docs.anthropic.com/en/docs/claude-code) to handle it. Automatically.
+Issue-Pilot is a locally-running AI task scheduling tool. Label a GitHub Issue, and it automatically dispatches [Claude Code](https://docs.anthropic.com/en/docs/claude-code) to handle it — analyze problems, answer questions, or even write code and open PRs.
 
-It's a daemon running on your machine. Every few seconds it checks GitHub for new tasks, claims them, dispatches AI, and reports back. No servers to deploy, no cloud services to set up — just `npm install` and one command.
+It runs as a daemon on your machine, continuously polling GitHub for new tasks, claiming them, executing via AI, and reporting results back to the issue. No servers, no third-party services — just install and run.
 
 ## Why?
 
-If you've used Claude Code, you know it's great at coding tasks. But the manual loop — copy issue content, paste into terminal, wait, update issue — gets old fast.
+Claude Code is great at coding tasks, but the manual loop — copy issue content, paste into terminal, wait, go back and update the issue — is repetitive enough to warrant automation.
 
-Issue-Pilot automates that loop:
+Issue-Pilot turns that into:
 
 ```
-You label → Issue-Pilot detects → Claude Code works → Results posted back
+You label → Issue-Pilot detects → Claude Code executes → Results posted back
 ```
 
 You manage the issues. AI does the rest.
 
-## How to use it
+## Quick Start
 
-Three steps:
-
-**Step 1: Install**
+### 1. Install
 
 ```bash
 npm install -g issue-pilot
 ```
 
-**Step 2: Configure**
+### 2. Configure
 
-You need two things — a GitHub token and a workflow file.
+You need two things: a GitHub token and a workflow file.
 
-Set your GitHub token:
+**Set your token:**
 
 ```bash
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxx
 ```
 
-> Or put it in `~/.issue-pilot/.env`.
+> You can also put it in `~/.issue-pilot/.env`.
 
-Create a workflow file — it's Markdown with config on top and your AI prompt below:
+**Create a workflow file:**
+
+The workflow file is Markdown — YAML config on top, AI prompt template below.
 
 ```bash
 mkdir -p ~/.issue-pilot
-curl -o ~/.issue-pilot/WORKFLOW.md https://raw.githubusercontent.com/xazaj/issue-pilot/main/WORKFLOW.example.md
+curl -o ~/.issue-pilot/WORKFLOW.md \
+  https://raw.githubusercontent.com/xazaj/issue-pilot/main/WORKFLOW.example.md
 ```
 
-Edit it. Three required fields:
+Edit `WORKFLOW.md` and fill in the three required fields:
 
 ```yaml
 ---
-repo_owner: "your-org"          # Your GitHub username
+repo_owner: "your-org"          # GitHub username or organization
 repo_name: "your-repo"          # Repository name
 working_dir: "/path/to/repo"    # Absolute path to local clone
 ---
 ```
 
-The prompt section? Customize it however you want. Triage issues? Write a triage prompt. Write code? Write a coding prompt. **The workflow file defines what the AI does.**
+The prompt section is fully customizable. Need issue triage? Write a triage prompt. Need code changes? Write a coding prompt. **The workflow file defines what the AI does.**
 
-**Step 3: Run**
+### 3. Create Labels
+
+In your target repository's **Settings → Labels**, create these labels (names are configurable):
+
+| Label | Purpose |
+|-------|---------|
+| `pilot:ready` | Task is ready for AI execution |
+| `pilot:in-progress` | Task is being processed |
+| `pilot:failed` | Execution failed, needs attention |
+
+### 4. Run
 
 ```bash
 issue-pilot
 ```
 
-Create three labels in your repo: `pilot:ready`, `pilot:in-progress`, `pilot:failed`. Label any issue with `pilot:ready` and watch what happens.
+Label any issue with `pilot:ready` to trigger execution.
 
-## How it works
+## How It Works
 
-Simple architecture. Borrowed the reconciliation loop pattern from Kubernetes:
+The architecture borrows the reconciliation loop pattern from Kubernetes controllers:
 
 ```
-GitHub Issues                     Issue-Pilot (your machine)
+GitHub Issues                     Issue-Pilot (local)
 
  Issue #42                        ┌──────────────┐
- [pilot:ready]  ─────────────────>│  Reconciler   │ checks GitHub every 30s
+ [pilot:ready]  ─────────────────>│  Reconciler   │ polls GitHub every 30s
                                   └──────┬───────┘
                                          │ found a task
                                   ┌──────▼───────┐
-                                  │  Dispatcher   │ queues it, one at a time
+                                  │  Dispatcher   │ serial queue scheduling
                                   └──────┬───────┘
                                          │
                                   ┌──────▼───────┐
-                                  │    Runner     │ fires up Claude Code
+                                  │    Runner     │ launches Claude Code
                                   └──────┬───────┘
                                          │
  Issue #42                               │
  [pilot:in-progress]  <──────────────────┘
- Claude reads code, writes comments, opens PRs…
+ Claude analyzes code, writes comments, opens PRs…
 ```
 
-Why polling instead of webhooks? This runs locally — no public IP, no webhook endpoint. And polling is **naturally fault-tolerant**: crash and restart? Tasks are still there on GitHub. Network drops? Retry next cycle. No special recovery logic needed.
+Why polling over webhooks? This is a local tool — no public IP for webhook delivery. Polling is also naturally fault-tolerant: after a process restart, unfinished tasks are automatically rediscovered. Network interruptions resolve on the next poll cycle. No special recovery logic required.
 
-## Two modes
+## Run Modes
 
-**Headless** — background mode with structured JSON logs:
+**Headless** — background execution with structured JSON logs:
 
 ```bash
-issue-pilot
-issue-pilot /path/to/WORKFLOW.md    # specify workflow path
+issue-pilot                          # auto-discovers WORKFLOW.md
+issue-pilot /path/to/WORKFLOW.md     # specify workflow file
 ```
 
 **TUI** — interactive terminal dashboard:
@@ -122,23 +133,21 @@ issue-pilot /path/to/WORKFLOW.md    # specify workflow path
 issue-pilot-tui
 ```
 
-## Where does the workflow file go?
+## Workflow File Lookup
 
-Issue-Pilot looks in this order:
+```
+1. CLI argument path
+2. ./WORKFLOW.md (current directory)
+3. ~/.issue-pilot/WORKFLOW.md (global default)
+```
 
-1. Path you pass as CLI argument
-2. `./WORKFLOW.md` in the current directory
-3. `~/.issue-pilot/WORKFLOW.md` as global default
+## Configuration Reference
 
-If it can't find one, it tells you where to create it.
-
-## Configuration reference
-
-YAML front matter in your workflow file:
+### Runtime Config
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `repo_owner` | *required* | GitHub user or org |
+| `repo_owner` | *required* | GitHub username or organization |
 | `repo_name` | *required* | Repository name |
 | `working_dir` | *required* | Absolute path to local repo clone |
 | `poll_interval` | `30` | Polling interval (seconds) |
@@ -153,34 +162,36 @@ YAML front matter in your workflow file:
 | `assignee` | `""` | Only handle issues assigned to this user |
 | `log_level` | `info` | Log level |
 
-Template variables for the prompt:
+### Template Variables
+
+Available Mustache variables for the prompt body:
 
 `{{issue_number}}` `{{issue_title}}` `{{issue_body}}` `{{issue_url}}` `{{issue_labels}}` `{{issue_assignees}}` `{{repo_owner}}` `{{repo_name}}`
 
-## What if something goes wrong?
+## Fault Recovery
 
-Mostly nothing for you to do:
+The reconciliation loop architecture provides automatic recovery for most failure scenarios:
 
-| What happened | What Issue-Pilot does |
-|---------------|----------------------|
-| Process crashed | Picks up tasks automatically on restart |
-| Claude stuck | 5min silence → force-terminated |
-| Task too long | 30min hard timeout, marked failed |
-| Network down | Retries next poll cycle |
-| GitHub rate limited | Octokit handles 429 retries automatically |
-| Labels changed manually | Reads fresh state every scan |
+| Scenario | Recovery |
+|----------|----------|
+| Process crash or restart | Automatically rediscovers unfinished tasks |
+| Claude process hang | Terminated after 5 minutes of silence |
+| Task timeout | Hard timeout at 30 minutes, marked as failed |
+| Network interruption | Retries on next poll cycle |
+| GitHub API rate limit | Octokit handles 429 retries internally |
+| Labels manually changed | Reads fresh state on every scan |
 
-Failed tasks get a comment explaining why — failure reason, turns completed, tokens used. Fix the issue, re-label `pilot:ready`, try again.
+When a task fails, Issue-Pilot posts a diagnostic comment on the issue (failure reason, turns completed, token usage). Re-label with `pilot:ready` to retry.
 
-## Run from source
+## Run from Source
 
 ```bash
 git clone https://github.com/xazaj/issue-pilot.git
 cd issue-pilot
 npm install
-npm start           # Headless
-npm run tui         # TUI
-npm run dev         # Dev mode (auto-restart)
+npm start           # Headless mode
+npm run tui         # TUI mode
+npm run dev         # Dev mode (auto-restart on changes)
 ```
 
 ## Requirements
@@ -189,9 +200,9 @@ npm run dev         # Dev mode (auto-restart)
 - **Claude Code CLI** (installed and authenticated)
 - **GitHub Token** (issues read/write + repo read)
 
-## Deep dive
+## Learn More
 
-- [Architecture](docs/architecture.md) — Reconciliation loop, state machine, fault model, roadmap
+- [Architecture](docs/architecture.md) — Reconciliation loop, state machine, fault model, evolution roadmap
 - [Detailed Design](docs/design.md) — Module design, communication protocol, full execution flow
 
 ## License
